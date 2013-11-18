@@ -6,6 +6,8 @@ package control;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Map;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -21,13 +23,14 @@ import modele.Med;
  * @author ighembaza
  */
 @WebServlet(name = "control", urlPatterns = {"/control"})
-public class control extends HttpServlet {
-    
+public class Control extends HttpServlet {
+
     private Pays p;
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        p= new Pays(); //instancie les objets utiles
+        p = new Pays(); //instancie les objets utiles
+
     }
 
     /**
@@ -44,22 +47,39 @@ public class control extends HttpServlet {
             throws ServletException, IOException {
 
         String page;
-        String choix = request.getParameter("choix");
-        if (choix != null) {
-            Collection<Dep> p = p.getMed(choix).getP();
-            request.setAttribute("listeProprio", p);
-            request.setAttribute("nomClub", p.getClub(choix).getNom());
-            request.setAttribute("numClub", p.getClub(choix).getNum());
-            page = "listeProprio.jsp";
-        } else {
-            Map<Integer, Med> liste = p.listemedecin(); // récupère la collection
-            request.setAttribute("listeClub", liste); // cet objet devient un attribut de request
 
+        if (request.getParameter("choix") == null) {
+            page = "accueil.jsp";
+        } else if (request.getParameter("choix").equals("dep")) {
+            String choixDep = request.getParameter("choixDep");
+            if (choixDep == null) {
+
+                request.setAttribute("departements", p.getLesDeps());
+                page = "liste_departement.jsp";
+            } else {
+                Dep d = p.getLeDep(choixDep);
+                request.setAttribute("listemedecin", d.getLesMeds());
+//                Map<Integer, Med> liste = m.getLesMeds(); // récupère la collection
+//                request.setAttribute("listeNom", liste); // cet objet devient un attribut de request
+
+                page = "listemedecin.jsp";
+            }
+
+        } else if (request.getParameter("choix").equals("nom")) {
+            for (Dep d : p.getLesDeps()) {
+                for (Med m : d.getLesMeds()) {
+                    if(m.getNom().startsWith(nomMed)) {
+                        maCol.add(m);
+                    }
+                }
+            }
             page = "listemedecin.jsp";
-            //appel de la JSP
+            // appel de la JSP
+        } else {
+            page = "accueil.jsp";
         }
-            request.getRequestDispatcher(page).forward(request, response);
-        
+
+        request.getRequestDispatcher(page).forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
