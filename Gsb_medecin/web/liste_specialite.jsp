@@ -27,17 +27,17 @@
 
                     <li><a href = "control?choix=nom">Liste des médecins par nom</a></li>
                     
-                    <li><a href = "control?choix=nom">Liste des médecins par spécialité complémentaire</a></li>
+                    <li><a href = "control?choix=spe">Liste des médecins par spécialité complémentaire</a></li>
                 </ul>
             </div>
             <div id="contenu">
-        <h2>Liste des Médecins par département</h2>
-             Séléctionner un département :   
-        <form action="Control?choix=dep" method="POST">
-             <select name="choixDep">
-                <c:forEach var="laSpe" items="${spe}">
-                <option value="${laSpe.spe}">${laSpe.spe}</option>
-            </c:forEach>                
+        <h2>Liste des Médecins par spécialité</h2>
+             Séléctionner une spécialité :   
+             <form action="Control?choix=spe" method="POST">
+             <select name="choixSpe">
+                <c:forEach var="laSpe" items="${specialite}">
+                    <option value="${laSpe.nomSpe}">${laSpe.nomSpe}</option>
+                </c:forEach>                
             </select>
            
             <input type="submit" value="Envoyer">

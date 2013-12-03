@@ -1,17 +1,16 @@
 <%-- 
-    Document   : liste_departement
-    Created on : 5 nov. 2013, 15:30:11
-    Author     : ighembaza
+    Document   : liste_nom
+    Created on : 5 nov. 2013, 15:30:51
+    Author     : plasalmonie
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
 <html>
     <head>
         <link rel="stylesheet" type="text/css" href="styles.css" />  
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Liste des médecins par département</title>
+        <title>Liste des médecins par nom</title>
     </head>
     <body>
         <div id="page">
@@ -31,17 +30,15 @@
                 </ul>
             </div>
             <div id="contenu">
-        <h2>Liste des Médecins par département</h2>
-             Séléctionner un département :   
-        <form action="Control?choix=dep" method="POST">
-             <select name="choixDep">
-                <c:forEach var="leDep" items="${departements}">
-                <option value="${leDep.num}">${leDep.num}</option>
-            </c:forEach>                
-            </select>
-           
+        <h2>Liste des Médecins par nom</h2>
+        Veuillez taper le nom ou un bout du nom d'un médecin :
+        <form action="Control?choix=nom" method="POST">
+            <input type="text" name="choixNom"size="5">
             <input type="submit" value="Envoyer">
-    </form>
+        </form>
             </div>
-</body>
+
+
+        </div>
+    </body>
 </html>
