@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.TreeSet;
 
 /**
  *
@@ -17,70 +18,89 @@ import java.util.HashSet;
  */
 public class PaysDAO {
 
-    private static HashSet<Dep> b;
-
-    public static void charge(Pays p) {
+    public static Collection<Dep> getLesDeps() {
+        Collection<Dep> lesDeps = new TreeSet<Dep>();
         try {
             Connection con = Connect.get();
             Statement req;
             req = con.createStatement();
-            ResultSet rs = req.executeQuery("select * from medecin");
+            ResultSet rs = req.executeQuery("select distinct departement from medecin");
 
-            //Parcours
-            String id;
-            String nom;
-            String prenom;
-            String adresse;
-            String tel;
-            String specialitecomplementaire;
+
             String departement;
 
+            while (rs.next()) {
+                departement = rs.getString("departement");
 
-            rs.next();
-            id = rs.getString(1);
-            nom = rs.getString(2);
-            prenom = rs.getString(3);
-            adresse = rs.getString(4);
-            tel = rs.getString(5);
-            specialitecomplementaire = rs.getString(6);
-            departement = rs.getString(7);
-            
-            p.getLeDep(departement);
-
-//            b.addType(null);
-
-//                t = new HashSet <Type> ();
-            Statement reqP = con.createStatement();
-            ResultSet rsP = reqP.executeQuery(
-                    "select id, description,prix "
-                    + "from type order by prix");
-
-            while (rsP.next()) {
-                Statement reqP2 = con.createStatement();
-                ResultSet rsP2 = reqP2.executeQuery(
-                        "select code, idType, nomabo "
-                        + "from emplacement where idType = " + rsP.getString("id"));
-                Collection<Dep> e = new HashSet<Dep>();
-
-                while (rsP2.next()) {
-                    e.add(new Med(rsP2.getString(1), rsP2.getString(3)));
-                }
-
-
-                Med t = new Med(rsP.getString("id"), rsP.getString("description"),
-                        rsP.getDouble("prix"), e);
-                //b.add(new Brocante(rsP.getInt(1),rsP.getString(2),rsP.getString(3)));
-                p.addType(t);
+                lesDeps.add(new Dep(departement));
             }
-            rsP.close();
-//              
-//                lesTypes.put(new String(nom), new Brocante(nom, lieu, dateb, t));
-//                i++;
+
 //            
             rs.close();
 
         } catch (SQLException e) {
             System.out.println("Erreur SQL :" + e);
         }
-
+        return lesDeps;
     }
+
+    public static Collection<Spe> getLesSpes() {
+        Collection<Spe> lesSpes = new TreeSet<Spe>();
+        try {
+            Connection con = Connect.get();
+            Statement req;
+            req = con.createStatement();
+            ResultSet rs = req.executeQuery("select distinct specialitecomplementaire"
+                    + " from medecin where specialitecomplementaire is not null;");
+
+            //Parcours
+            String spe;
+
+
+            while (rs.next()) {
+                spe = rs.getString("specialitecomplementaire");
+
+                lesSpes.add(new Spe(spe));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur SQL :" + e);
+        }
+        return lesSpes;
+    }
+
+    public static Collection<Med> getLesMeds() {
+        Collection<Med> lesMeds = new TreeSet<Med>();
+        try {
+            Connection con = Connect.get();
+            Statement req;
+            req = con.createStatement();
+            ResultSet rsP2 = req.executeQuery("select * from medecin;");
+
+//            Parcours
+            String id;
+            String nom;
+            String prenom;
+            String adresse;
+            String tel;
+            String spe;
+            String dep;
+
+            while (rsP2.next()) {
+                id = rsP2.getString("id");
+                nom = rsP2.getString("nom");
+                prenom = rsP2.getString("prenom");
+                adresse = rsP2.getString("adresse");
+                tel = rsP2.getString("tel");
+                spe = rsP2.getString("specialitecomplementaire");
+                dep = rsP2.getString("departement");
+
+                lesMeds.add(new Med(nom, prenom, adresse, tel, spe, id, dep));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erreur SQL :" + e);
+        }
+        return lesMeds;
+    }
+}

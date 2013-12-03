@@ -1,6 +1,6 @@
 <%-- 
-    Document   : liste_departement
-    Created on : 5 nov. 2013, 15:30:11
+    Document   : listemedecin
+    Created on : 5 nov. 2013, 12:53:21
     Author     : ighembaza
 --%>
 
@@ -11,7 +11,7 @@
     <head>
         <link rel="stylesheet" type="text/css" href="styles.css" />  
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Liste des médecins par département</title>
+        <title>Liste des médecins</title>
     </head>
     <body>
         <div id="page">
@@ -31,17 +31,27 @@
                 </ul>
             </div>
             <div id="contenu">
-        <h2>Liste des Médecins par département</h2>
-             Séléctionner un département :   
-        <form action="Control?choix=dep" method="POST">
-             <select name="choixDep">
-                <c:forEach var="leDep" items="${departements}">
-                <option value="${leDep.num}">${leDep.num}</option>
-            </c:forEach>                
-            </select>
-           
-            <input type="submit" value="Envoyer">
-    </form>
-            </div>
-</body>
+        <h2>Liste des Médecins</h2>
+        <table>
+            <tr>
+            <td>Nom</td>
+            <td>Prénom</td>
+            <td>Adresse</td>
+            <td>Téléphone</td>
+            <td>Spécialité</td>
+        </tr>
+
+        <c:forEach var="med" items="${listemedecin}">
+            <tr>
+                <td>${med.nom}</td>
+                <td>${med.prenom}</td>
+                <td>${med.adresse}</td>
+                <td>${med.tel}</td>
+                <td>${med.spe}</td>
+            </tr>
+ 
+    </c:forEach>
+</table>
+        </div>
+    </body>
 </html>
