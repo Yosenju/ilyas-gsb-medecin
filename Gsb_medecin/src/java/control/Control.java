@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Map;
+import java.util.TreeSet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import modele.Dep;
 import modele.Pays;
 import modele.Med;
+import modele.Spe;
 
 /**
  *
@@ -66,14 +68,43 @@ public class Control extends HttpServlet {
             }
 
         } else if (request.getParameter("choix").equals("nom")) {
-            for (Dep d : p.getLesDeps()) {
-                for (Med m : d.getLesMeds()) {
-                    if(m.getNom().startsWith(nomMed)) {
-                        maCol.add(m);
+            String choixNom = request.getParameter("choixNom");
+
+            if (choixNom == null) {
+                //Collection<Dep> d = p.getLesDeps();
+
+                page = "choix_nom.jsp";
+            } else {
+                Collection<Med> med = new TreeSet<Med>();
+                for (Dep d : p.getLesDeps()) {
+                    for (Med m : d.getLesMeds()) {
+                        if (m.getNom().startsWith(choixNom)) {
+                            med.add(m);
+                        }
                     }
                 }
+                request.setAttribute("listemedecin", med);
+                page = "listemedecin.jsp";
+                // appel de la JSP
             }
-            page = "listemedecin.jsp";
+
+
+
+
+        } else if (request.getParameter("choix").equals("spe")) {
+            String choixNom = request.getParameter("choixSpe");
+
+            if (choixNom == null) {
+                Collection<Spe> spe = p.getLesSpes();
+                request.setAttribute("specialite", spe);
+                page = "liste_specialite.jsp";
+            } else {
+                request.setAttribute("uneSpe", p.getLaSpe(choixNom));
+                request.setAttribute("listemedecin", p.getLaSpe(choixNom).getLesMeds());
+                page = "listemedecin.jsp";
+            }
+
+            
             // appel de la JSP
         } else {
             page = "accueil.jsp";
